@@ -9,6 +9,9 @@
 <script>
 import { Map, NavigationControl, Marker } from 'maplibre-gl';
 import { shallowRef, onMounted, onUnmounted, markRaw } from 'vue';
+import "@maptiler/sdk/dist/maptiler-sdk.css";
+//import maptiler from 'maptiler-sdk';
+import maptilersdkMaptilerGeocoder from 'maptiler-geocoding-control';
 
 export default {
   name: "MapMenu",
@@ -20,12 +23,14 @@ export default {
       const apiKey = 'A5zQ1EBLXZSGQC6E33v5';
 
       const initialState = { lng: -34.9081441, lat: -7.8319231, zoom: 12 };
+   
 
       map.value = markRaw(new Map({
         container: mapContainer.value,
         style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${apiKey}`,
         center: [initialState.lng, initialState.lat],
         zoom: initialState.zoom
+        
       }));
       map.value.addControl(new NavigationControl(), 'top-right');
 
@@ -36,21 +41,26 @@ export default {
         new Marker({color: "#FF0000"})
         .setLngLat([-34.909491814949575, -7.847889683524693])
         .addTo(map.value);
+        const gc = new maptilersdkMaptilerGeocoder.GeocodingControl();
+      map.value.addControl(gc, 'top-left');
     }),
     onUnmounted(() => {
       map.value?.remove();
     })
-
+    
     return {
       map, mapContainer
     };
   }
 };
+
+
 </script>
 
 
 <style scoped>
 @import '~maplibre-gl/dist/maplibre-gl.css';
+
 
 .map-wrap {
   position: relative;
